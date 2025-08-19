@@ -1,0 +1,18 @@
+PORTA ERRADA
+
+Error: connect ECONNREFUSED 127.0.0.1:3301
+
+USUÁRIO OU SENHA INCORRETO
+
+Error: ER_ACCESS_DENIED_ERROR: Access denied for user 'user'@'localhost' (using password: NO)
+
+BANCO DE DADOS DESCONHECIDO
+
+Error: ER_BAD_DB_ERROR: Unknown database 'sdfsdfsdfadf'
+
+MYSQL NO XAMPP NÃO INICIADO
+
+Error: connect ECONNREFUSED 127.0.0.1:3306
+
+
+
