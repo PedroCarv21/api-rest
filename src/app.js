@@ -1,14 +1,15 @@
 import express from 'express'
+import conexao from './infra/conexao.js'
 const app = express()
 
 app.use(express.json())
 
-const cursos = [
-    {id: 1, disciplina: 'ADS'},
-    {id: 2, disciplina: 'ADS'},
-    {id: 3, disciplina: 'ADS'},
-    {id: 4, disciplina: 'ADS'}
-]
+// const cursos = [
+//     {id: 1, disciplina: 'ADS'},
+//     {id: 2, disciplina: 'ADS'},
+//     {id: 3, disciplina: 'ADS'},
+//     {id: 4, disciplina: 'ADS'}
+// ]
 
 function buscarCursosPorId(id){
     return cursos.filter(curso => curso.id == id)
@@ -19,12 +20,23 @@ function buscarIndexCurso(id){
 }
 
 // Criando uma rota default (endpoint)
-app.get('/', (req, res) => {
-    res.send('Hello Pedro')
-})
+// app.get('/', (req, res) => {
+//     res.send('Hello Pedro')
+// })
 
+
+//ROTAS
 app.get('/cursos', (req, res) => {
-    res.status(200).send(cursos)
+    // res.status(200).send(cursos)
+    const sql = "SELECT * FROM curso;"
+    conexao.query(sql, (error, result) => {
+        if (error){
+            console.log(error)
+        }
+        else {
+            res.status(200).json(result)
+        }
+    })
 })
 
 app.post('/cursos', (req, res) => {
