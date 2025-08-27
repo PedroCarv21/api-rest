@@ -1,5 +1,6 @@
 import express from 'express'
-import conexao from './infra/conexao.js'
+import conexao from './app/database/conexao.js'
+import CursoController from './app/controllers/CursoController.js'
 const app = express()
 
 app.use(express.json())
@@ -26,19 +27,7 @@ function buscarIndexCurso(id){
 
 
 //ROTAS
-app.get('/cursos', (req, res) => {
-    // res.status(200).send(cursos)
-    const sql = "SELECT * FROM curso;"
-    conexao.query(sql, (error, result) => {
-        if (error){
-            console.log(error)
-            res.status(404).json({'error': error})
-        }
-        else {
-            res.status(200).json(result)
-        }
-    })
-})
+app.get('/cursos', CursoController.index)
 
 
 app.get('/cursos/:id', (req, res) => {
