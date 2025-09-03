@@ -6,72 +6,78 @@
 
 import conexao from '../database/conexao.js'
 
+import CursoRepository from '../repositories/CursoRepository.js';
+
 class CursoController {
-    index(req, res) {
-        const sql = "SELECT * FROM curso;"
-        conexao.query(sql, (error, result) => {
-            if (error) {
-                console.log(error)
-                res.status(404).json({ 'error': error })
-            }
-            else {
-                res.status(200).json(result)
-            }
-        })
+    async index(req, res) {
+        try {
+            const cursos = await CursoRepository.findAll();
+            res.status(200).json(cursos);
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ 'error': 'Erro ao buscar cursos' });
+        }
     }
-    show(req, res) {
-        const { id } = req.params
-        const sql = "SELECT * FROM curso WHERE id = ?"
-        conexao.query(sql, [id], (error, result) => {
 
-            if (result.length > 0) {
-                res.status(200).json(result[0])
+    async show(req, res) {
+        const { id } = req.params;
+        try {
+            const curso = await CursoRepository.findById(id);
+            if (curso.length > 0) {
+                res.status(200).json(curso[0]);
             } else {
-                res.status(404).json({ "mensagem": "Curso não encontrado" })
+                res.status(404).json({ "mensagem": "Curso não encontrado" });
             }
-        })
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ 'error': 'Erro ao buscar o curso' });
+        }
     }
 
-    store(req, res) {
-        const { id, disciplina } = req.body
-        const sql = "INSERT INTO curso (id, disciplina) VALUES (?, ?)"
-    
-        conexao.query(sql, [id, disciplina], (error, result) => {
-            if (error && error.code === 'ER_DUP_ENTRY') {
-                return res.status(409).json({ "mensagem": "Já existe um curso com esse ID" })
+    async store(req, res) {
+        const { id, disciplina } = req.body;
+        try {
+            await CursoRepository.create(id, disciplina);
+            res.status(200).json({ id, disciplina });
+        } catch (error) {
+            if (error.code === 'ER_DUP_ENTRY') {
+                return res.status(409).json({ "mensagem": "Já existe um curso com esse ID" });
             }
-    
-            res.status(200).json({ id, disciplina })
-        })
+            console.log(error);
+            res.status(500).json({ 'error': 'Erro ao criar curso' });
+        }
     }
-    
 
-    update(req, res) {
-        const { id } = req.params
-        const { disciplina } = req.body
-        const sql = "UPDATE curso SET disciplina = ? WHERE id = ?"
-        conexao.query(sql, [disciplina, id], (error, result) => {
-
+    async update(req, res) {
+        const { id } = req.params;
+        const { disciplina } = req.body;
+        try {
+            const result = await CursoRepository.update(id, disciplina);
             if (result.affectedRows > 0) {
-                res.status(200).json({ "mensagem": "Curso atualizado com sucesso", id, disciplina })
+                res.status(200).json({ "mensagem": "Curso atualizado com sucesso", id, disciplina });
             } else {
-                res.status(404).json({ "mensagem": "Curso não encontrado" })
+                res.status(404).json({ "mensagem": "Curso não encontrado" });
             }
-        })
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ 'error': 'Erro ao atualizar curso' });
+        }
     }
 
-    delete(req, res) {
-        const { id } = req.params
-        const sql = "DELETE FROM curso WHERE id = ?"
-        conexao.query(sql, [id], (error, result) => {
-
+    async delete(req, res) {
+        const { id } = req.params;
+        try {
+            const result = await CursoRepository.delete(id);
             if (result.affectedRows > 0) {
-                res.status(200).json({ "mensagem": `Curso com id ${id} deletado com sucesso` })
+                res.status(200).json({ "mensagem": `Curso com id ${id} deletado com sucesso` });
             } else {
-                res.status(404).json({ "mensagem": "Curso não encontrado" })
+                res.status(404).json({ "mensagem": "Curso não encontrado" });
             }
-        })
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ 'error': 'Erro ao deletar curso' });
+        }
     }
 }
 
-export default new CursoController()
+export default new CursoController();
