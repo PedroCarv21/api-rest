@@ -1,6 +1,6 @@
-import mysql from 'mysql'
+import mysql from 'mysql2/promise'
 
-const conexao = mysql.createConnection({
+const pool = mysql.createPool({
     host: '127.0.0.1',
     port: '3306',
     user: 'root',
@@ -8,8 +8,8 @@ const conexao = mysql.createConnection({
     database: 'cursodb'
 })
 
-conexao.connect()
+// conexao.connect()
 /*
  Aplicamos o export para utilizar o objeto em outros aplicativos
 */
-export default conexao
+export default pool;
